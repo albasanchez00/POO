@@ -1,29 +1,16 @@
 <?php
-
-class Coche
-{
-    private $marca;
-    private $modelo;
-    private $kms;
-    private $color;
-
-    public function mostrarDatos()
-    {
-        echo "Marca: " . $this->marca . " Modelo: " . $this->modelo . " Kms: " . $this->kms . " Color: " . $this->color;
+include_once "Flota.php";
+include_once "Coche.php";
+session_start();
+//Primero comprobamos que tenemos datos para crear el objeto.
+if (isset($_GET["marca"]) && isset($_GET["modelo"]) && isset($_GET["kms"]) && isset($_GET["color"])) {
+    $cocheN = new Coche($_GET["marca"], $_GET["modelo"], $_GET["kms"], $_GET["color"]);
+    if (!isset($_SESSION["unaFlota"])) {
+        $_SESSION["unaFlota"] = new Flota();
     }
-
-    public function __construct($marca, $modelo, $kms, $color)
-    {
-        $this->marca = $marca;
-        $this->modelo = $modelo;
-        $this->kms = $kms;
-        $this->color = $color;
-        $this->mostrarDatos();
-    }
+    $_SESSION["unaFlota"]->agregarCoches($cocheN);
 }
-
 ?>
-
 <!doctype html>
 <html lang="es">
 <head>
@@ -57,10 +44,8 @@ class Coche
         </div>
     </form>
     <?php
-        //Primero comprobamos que tenemos datos para crear el objeto.
-        if (isset($_GET["marca"]) && isset($_GET["modelo"]) && isset($_GET["kms"]) && isset($_GET["color"])) {
-            $cocheF = new Coche($_GET["marca"], $_GET["modelo"], $_GET["kms"], $_GET["color"]);
-            $cocheF->mostrarDatos();
+        if (!empty($_SESSION["unaFlota"])) {
+            $_SESSION["unaFlota"]->mostrarFlota();
         }
     ?>
 </section>
